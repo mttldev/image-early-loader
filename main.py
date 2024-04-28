@@ -48,6 +48,10 @@ def main():
     config = load_config()
     # 使用画像の抽出
     result: dict[str, list[str]] = {}
+
+    if not os.path.exists("output"):
+        os.makedirs("output")
+
     for name, files in config.files.items():
         result[name] = []
         for file in files:
@@ -58,6 +62,8 @@ def main():
                 if is_image_command:
                     if image_command not in result[name]:
                         result[name].append(image_command)
+        with open(f"output/{name}.txt", "w", encoding="utf-8") as f:
+            f.write("\n".join([f"    show {image} zorder -100" for image in result[name]]))
     # 結果の保存
     with open("result.yml", "w", encoding="utf-8") as f:
         yaml.dump(result, f)
